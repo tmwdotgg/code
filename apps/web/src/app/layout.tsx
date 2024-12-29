@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
+import "@repo/ui/styles.css";
 
-import { GeistSans } from "geist/font/sans";
+import { Manrope } from "next/font/google";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
@@ -11,12 +12,17 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
+const font = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body>
+    <html lang="en">
+      <body className={font.className}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>

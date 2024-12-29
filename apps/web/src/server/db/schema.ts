@@ -10,20 +10,21 @@ import { index, int, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = sqliteTableCreator((name) => `lazer_${name}`);
+export const createTable = sqliteTableCreator((name) => `web_${name}`);
 
-export const modpacks = createTable(
-  "modpack",
+export const posts = createTable(
+  "post",
   {
     id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    modpack: text("modpack").default("none").notNull(),
-    version: text("version").default("0.0.0").notNull(),
-    ip: text("ip").default("changeme.tmw.gg").notNull(),
-    link: text("link").default("https://files.tmw.gg/changeme").notNull(),
-    online: int("online", { mode: "number" }).default(0).notNull(),
-    players: int("players", { mode: "number" }).default(0).notNull(),
-    maxplayers: int("maxplayers", { mode: "number" }).default(0).notNull(),
-    maintenance: int("maintenance", { mode: "number" }).default(0).notNull(),
-    icon: text("icon").default("").notNull()
-  }
+    name: text("name", { length: 256 }),
+    createdAt: int("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+    updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+      () => new Date()
+    ),
+  },
+  (example) => ({
+    nameIndex: index("name_idx").on(example.name),
+  })
 );

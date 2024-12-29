@@ -5,6 +5,9 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+    reactStrictMode: true,
+    transpilePackages: ["@repo/ui"],
+};
 
 export default config;
