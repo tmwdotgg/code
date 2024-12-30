@@ -1,12 +1,12 @@
-import { createClient, type Client } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/mysql2";
+import { createPool, type Pool } from "mysql2/promise";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 const env = createEnv({
   server: {
-    DATABASE_URL: z.string().min(1),
-    NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    DATABASE_URL: z.string(),
+    NODE_ENV: z.enum(["development", "production", "test"]),
   },
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
@@ -21,11 +21,10 @@ import * as schema from "./schema";
  * update.
  */
 const globalForDb = globalThis as unknown as {
-  client: Client | undefined;
+  conn: Pool | undefined;
 };
 
-export const client =
-  globalForDb.client ?? createClient({ url: env.DATABASE_URL });
-if (env.NODE_ENV !== "production") globalForDb.client = client;
+const conn = globalForDb.conn ?? createPool({ uri: env.DATABASE_URL });
+if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 
-export const db = drizzle(client, { schema });
+export const db = drizzle(conn, { schema, mode: "default" });

@@ -6,13 +6,20 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate", 
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
   "dependencies": {
-    "@libsql/client": "^0.9.0",
+    "mysql2": "^3.11.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "drizzle-orm": "^0.33.0",
     "zod": "^3.23.3"
-  },
+    },
   "devDependencies": {
-    "drizzle-kit": "^0.24.0"
+    "drizzle-kit": "^0.24.0",
+    "eslint-plugin-drizzle": "^0.2.3"
   }
 }
