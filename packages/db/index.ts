@@ -1,17 +1,16 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import { createPool, type Pool } from "mysql2/promise";
-import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-const env = createEnv({
-  server: {
-    DATABASE_URL: z.string(),
-    NODE_ENV: z.enum(["development", "production", "test"]),
-  },
-  runtimeEnv: {
-    DATABASE_URL: process.env.DATABASE_URL,
-    NODE_ENV: process.env.NODE_ENV,
-  },
+// Validate environment variables
+const envSchema = z.object({
+  DATABASE_URL: z.string(),
+  NODE_ENV: z.enum(["development", "production", "test"]),
+});
+
+const env = envSchema.parse({
+  DATABASE_URL: process.env.DATABASE_URL,
+  NODE_ENV: process.env.NODE_ENV,
 });
 
 import * as schema from "./schema";
