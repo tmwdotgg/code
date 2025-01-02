@@ -3,7 +3,7 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 import sharedConfig from "@repo/tailwind-config";
 
 export default {
-  content: ["./src/**/*.tsx"],
+  content: ["./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
@@ -13,4 +13,4 @@ export default {
   },
   plugins: [],
   presets: [sharedConfig],
-} satisfies Config;
+} as Config;
