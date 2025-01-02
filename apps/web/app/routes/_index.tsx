@@ -1,70 +1,87 @@
 import { json } from "@remix-run/node";
 import { useLoaderData, useSubmit } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import { getCount, setCount } from "./api.count-updates";
-import { Card } from "@repo/ui/card";
+import { db } from "@repo/db";
+import { posts } from "@repo/db/schema";
 
 export async function loader() {
-  return json({ count: getCount() });
+  const allPosts = await db.select().from(posts).orderBy(posts.createdAt);
+  return json({ posts: allPosts });
 }
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
-  const action = formData.get("action");
-  
-  if (action === "increment") {
-    setCount(getCount() + 1);
-  } else if (action === "decrement") {
-    setCount(getCount() - 1);
+  const name = formData.get("name") as string;
+
+  if (name) {
+    await db.insert(posts).values({ name });
   }
 
-  return json({ count: getCount() });
+  return json({ success: true });
 }
 
 export default function Index() {
-  const { count: initialCount } = useLoaderData<typeof loader>();
-  const [count, setCount] = useState(initialCount);
+  const { posts: allPosts } = useLoaderData<typeof loader>();
   const submit = useSubmit();
 
-  useEffect(() => {
-    const eventSource = new EventSource("/api/count-updates");
-    
-    eventSource.onmessage = (event) => {
-      setCount(Number(event.data));
-    };
-
-    return () => eventSource.close();
-  }, []);
-
-  const handleClick = (action: "increment" | "decrement") => {
-    const formData = new FormData();
-    formData.append("action", action);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
     submit(formData, { method: "post" });
+    e.currentTarget.reset();
   };
 
   return (
-      <div className="flex h-screen items-center justify-center">
-        <Card>asdad </Card>
-          <div className="flex flex-col items-center gap-8">
-            <h1 className="text-2xl font-bold">Remix Counter</h1>
-            <div className="flex flex-col items-center gap-4">
-          <p className="text-4xl font-bold">{count}</p>
-          <div className="flex gap-4">
-            <button
-              onClick={() => handleClick("increment")}
-              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+    <main className="container mx-auto p-8">
+      <div className="flex flex-col gap-8">
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+          Posts
+        </h1>
+
+        <form 
+          onSubmit={handleSubmit} 
+          className="flex gap-4"
+        >
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter post name"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            required
+          />
+          <button
+            type="submit"
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+          >
+            Create Post
+          </button>
+        </form>
+        <h1 className="font-light">Weight 300</h1>
+<h1 className="font-normal">Weight 400</h1>
+<h1 className="font-medium">Weight 500</h1>
+<h1 className="font-semibold">Weight 600</h1>
+<h1 className="font-bold">Weight 700</h1>
+<h1 className="font-extrabold">Weight 800</h1>
+        <section className="grid gap-4">
+          {allPosts.map((post) => (
+            <div 
+              key={post.id}
+              className="rounded-lg border bg-card text-card-foreground shadow-sm p-6"
             >
-              Increment
-            </button>
-            <button
-              onClick={() => handleClick("decrement")}
-              className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-            >
-              Decrement
-            </button>
-          </div>
-        </div>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">
+                  {post.name}
+                </h2>
+                <time 
+                  className="text-sm text-muted-foreground"
+                  dateTime={post.createdAt.toString()}
+                >
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </time>
+              </div>
+            </div>
+          ))}
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

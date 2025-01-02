@@ -2,11 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
+* {
+  font-family: "Manrope Variable", sans-serif;
+}
+
+/*html,
 body {
   @apply bg-white dark:bg-gray-950;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
-}
+}*/
