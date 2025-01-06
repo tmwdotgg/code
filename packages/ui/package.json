@@ -9,7 +9,12 @@
   ],
   "exports": {
     "./styles.css": "./dist/index.css",
-    "./card": "./src/card.tsx"
+    "./navbar": "./src/navbar/index.ts",
+    "./card": "./src/card.tsx",
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
@@ -32,6 +37,9 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "@fontsource-variable/manrope": "^5.1.1"
+    "@fontsource-variable/manrope": "^5.1.1",
+    "@remix-run/react": "^2.7.2",
+    "lucide-react": "^0.344.0",
+    "motion": "^11.15.0"
   }
 }
