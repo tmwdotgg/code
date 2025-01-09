@@ -1,51 +1,56 @@
-import { X } from 'lucide-react';
 import { Link } from '@remix-run/react';
-
-interface MobileMenuItem {
-    label: string;
-    href: string;
-}
+import { X } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { NAV_ITEMS } from './Navbar';
 
 interface MobileMenuProps {
     isOpen: boolean;
-    setIsOpen: (value: boolean) => void;
-    items: MobileMenuItem[];
+    onClose: () => void;
 }
 
-export function MobileMenu({ isOpen, setIsOpen, items }: MobileMenuProps) {
-    if (!isOpen) return null;
-
+export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     return (
-        <div className="relative z-50 lg:hidden">
-            <div className="fixed inset-0 bg-black/25" onClick={() => setIsOpen(false)} />
-            
-            <div className="fixed inset-0 z-50 flex">
-                <div className="relative flex w-full max-w-xs flex-col bg-white dark:bg-gray-900 pb-12 pt-5">
-                    <div className="flex px-4">
-                        <button
-                            type="button"
-                            className="ml-auto -m-2.5 rounded-md p-2.5 text-gray-700 dark:text-gray-200"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            <span className="sr-only">Close menu</span>
-                            <X className="h-6 w-6" aria-hidden="true" />
-                        </button>
-                    </div>
-
-                    <div className="mt-6 space-y-2 px-4">
-                        {items.map((item) => (
-                            <Link
-                                key={item.href}
-                                to={item.href}
-                                className="block px-3 py-2 text-base font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
-                                onClick={() => setIsOpen(false)}
+        <AnimatePresence>
+            {isOpen && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.5 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="ui-fixed ui-inset-0 ui-bg-black ui-z-40"
+                    />
+                    <motion.div
+                        initial={{ x: '100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '100%' }}
+                        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                        className="ui-fixed ui-right-0 ui-top-0 ui-h-full ui-w-64 ui-bg-white ui-z-50 ui-shadow-xl ui-p-4 ui-rounded-l-xl ui-border-l-[1.5px] ui-border-gray-300"
+                    >
+                        <div className="ui-flex ui-justify-end">
+                            <button
+                                onClick={onClose}
+                                className="ui-p-2 ui-rounded-lg hover:ui-bg-gray-100"
                             >
-                                {item.label}
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div className="ui-flex ui-flex-col ui-gap-4 ui-mt-8">
+                            {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
+                                <Link
+                                    key={label}
+                                    to={to}
+                                    onClick={onClose}
+                                    className="ui-flex ui-items-center ui-gap-3 ui-p-2 ui-rounded-lg hover:ui-bg-gray-100"
+                                >
+                                    <Icon size={24} />
+                                    <span className="ui-text-lg">{label}</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </motion.div>
+                </>
+            )}
+        </AnimatePresence>
     );
-}
+} 

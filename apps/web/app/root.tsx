@@ -9,6 +9,7 @@ import type { LinksFunction } from "@remix-run/node";
 import "@repo/ui/styles.css";
 import "./tailwind.css";
 import "@fontsource-variable/manrope/wght.css";
+import { Navbar } from "@repo/ui/navbar";
 
 export const links: LinksFunction = () => [];
 
@@ -31,5 +32,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <>
+      <div className="relative z-50">
+        <Navbar />
+      </div>
+      <Outlet />
+    </>
+  );
 }
