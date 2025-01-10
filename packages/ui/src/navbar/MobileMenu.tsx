@@ -32,7 +32,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                                 onClick={onClose}
                                 className="ui-p-2 ui-rounded-lg hover:ui-bg-gray-100"
                             >
-                                <X size={24} />
+                                <X size={24}/>
                             </button>
                         </div>
                         <div className="ui-flex ui-flex-col ui-gap-4 ui-mt-8">

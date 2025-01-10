@@ -146,9 +146,9 @@ function ClientOnlyNav() {
                 <motion.button
                     variants={item}
                     onClick={() => setIsMobileMenuOpen(true)}
-                    className="md:ui-hidden ui-p-2 ui-rounded-lg hover:ui-bg-gray-100"
+                    className="md:ui-hidden ui-p-2 ui-rounded-lg transition-all duration-200 ease-in-out hover:ui-bg-[#252525] hover:ui-opacity-20"
                 >
-                    <Menu size={24} />
+                    <Menu size={24} className='ui-text-white' />
                 </motion.button>
             </motion.nav>
 
